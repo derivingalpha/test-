@@ -189,13 +189,13 @@
             for (let i = 0; i < n; i++) { g.ptext(String(A[i]), X(i), y1, { size: 26, bold: true, mono: true, color: C.speed }); g.ptext(String(B[i]), X(i), y2, { size: 26, bold: true, mono: true, color: C.fe }); }
             if (k < steps.length) steps[k].pr.forEach(([i, j], q) => { const c = g.ctx; c.strokeStyle = C.series[q % C.series.length]; c.lineWidth = 2.5; c.beginPath(); c.moveTo(X(i), y1 + 16); c.lineTo(X(j), y2 - 18); c.stroke(); });
             const c = g.ctx; c.strokeStyle = C.axis; c.lineWidth = 1.5; c.beginPath(); c.moveTo(X(2 * n - 1) + w / 2, 140); c.lineTo(X(0) + w / 2, 140); c.stroke();
-            const shown = Math.min(k, steps.length);
+            const shown = Math.min(k + 1, steps.length);
             for (let q = 0; q < shown; q++) g.ptext(String(steps[q].digit), X(q), 165, { size: 24, bold: true, mono: true, color: C.good });
             if (k >= steps.length && carry) String(carry).split('').reverse().forEach((d, q) => g.ptext(d, X(steps.length + q), 165, { size: 24, bold: true, mono: true, color: C.good }));
             if (k < steps.length && steps[k].carryIn) g.ptext('+' + steps[k].carryIn + ' carry', X(k), 200, { size: 12, color: C.pink });
           };
           const fr = [];
-          steps.forEach((st, k) => fr.push({ draw: drawK(k), say: `Column ${k + 1}: ${st.pr.map(([i, j]) => `${A[i]}×${B[j]}`).join(' + ')} = ${st.s}${st.carryIn ? ` + carry ${st.carryIn}` : ''} = ${st.tot} → write <b>${st.digit}</b>${st.tot >= 10 ? `, carry ${Math.floor(st.tot / 10)}` : ''}` }));
+          steps.forEach((st, k) => fr.push({ draw: drawK(k), say: `Column ${k + 1}: ${st.pr.map(([i, j]) => `${A[i]}×${B[j]}`).join(' + ')} = ${st.s}${st.carryIn ? ` + carry ${st.carryIn} = ${st.tot}` : ''} → write <b>${st.digit}</b>${st.tot >= 10 ? `, carry ${Math.floor(st.tot / 10)}` : ''}` }));
           fr.push({ draw: drawK(steps.length), say: `${carry ? `Write the final carry ${carry}. ` : ''}<b>${a} × ${b} = ${a * b}</b>` });
           return fr;
         },
