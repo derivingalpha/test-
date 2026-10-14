@@ -29,9 +29,9 @@
     ],
     formulas: [h`A = P(1+rt)`, h`A = P\left(1+\tfrac{r}{m}\right)^{mt}`, h`A = Pe^{rt}`, h`\text{EAR} = \left(1+\tfrac rm\right)^m - 1`],
     problems: [
-      () => { const P = R.pick([1000, 2500, 5000, 10000]), r = R.pick([0.04, 0.05, 0.06, 0.08]), t = R.int(2, 15); return { q: h`${P} at ${r * 100}% compounded annually for ${t} years. Final amount?`, a: P * Math.pow(1 + r, t), rtol: 1e-3, sol: h`$${P}(1+${r})^{${t}} = ${fmt(P * Math.pow(1 + r, t))}$` }; },
-      () => { const r = R.pick([0.06, 0.08, 0.1, 0.12, 0.18]), m = R.pick([2, 4, 12, 365]); return { q: h`EAR of ${r * 100}% compounded ${{ 2: 'semi-annually', 4: 'quarterly', 12: 'monthly', 365: 'daily' }[m]}? (in %)`, a: 100 * (Math.pow(1 + r / m, m) - 1), tol: 0.01, unit: '%', sol: h`$(1 + ${r}/${m})^{${m}} - 1 = ${fx(100 * (Math.pow(1 + r / m, m) - 1), 3)}\%$` }; },
-      () => { const P = R.pick([100, 1000]), r = R.pick([0.03, 0.05, 0.07]), t = R.int(1, 10); return { q: h`${P} continuously compounded at ${r * 100}% for ${t} years?`, a: P * Math.exp(r * t), rtol: 1e-3, sol: h`$${P}e^{${fx(r * t, 2)}} = ${fmt(P * Math.exp(r * t))}$` }; },
+      () => { const P = R.pick([1000, 2500, 5000, 10000]), r = R.pick([0.04, 0.05, 0.06, 0.08]), t = R.int(2, 15); return { q: h`${P} at ${fx(r * 100, 4)}% compounded annually for ${t} years. Final amount?`, a: P * Math.pow(1 + r, t), rtol: 1e-3, sol: h`$${P}(1+${r})^{${t}} = ${fmt(P * Math.pow(1 + r, t))}$` }; },
+      () => { const r = R.pick([0.06, 0.08, 0.1, 0.12, 0.18]), m = R.pick([2, 4, 12, 365]); return { q: h`EAR of ${fx(r * 100, 4)}% compounded ${{ 2: 'semi-annually', 4: 'quarterly', 12: 'monthly', 365: 'daily' }[m]}? (in %)`, a: 100 * (Math.pow(1 + r / m, m) - 1), tol: 0.01, unit: '%', sol: h`$(1 + ${r}/${m})^{${m}} - 1 = ${fx(100 * (Math.pow(1 + r / m, m) - 1), 3)}\%$` }; },
+      () => { const P = R.pick([100, 1000]), r = R.pick([0.03, 0.05, 0.07]), t = R.int(1, 10); return { q: h`${P} continuously compounded at ${fx(r * 100, 4)}% for ${t} years?`, a: P * Math.exp(r * t), rtol: 1e-3, sol: h`$${P}e^{${fx(r * t, 2)}} = ${fmt(P * Math.exp(r * t))}$` }; },
     ],
   });
 
@@ -57,8 +57,8 @@
     ],
     formulas: [h`\text{PV} = \frac{X}{(1+r)^t} = X\,D(t)`, h`\text{PV} = \sum_t C_t\,D(t)`, h`D(t) = e^{-rt}\ \text{(continuous)}`],
     problems: [
-      () => { const X = R.pick([1000, 5000, 10000]), r = R.pick([0.03, 0.05, 0.07, 0.1]), t = R.int(1, 20); return { q: h`PV of ${X} received in ${t} years at ${r * 100}%?`, a: X / Math.pow(1 + r, t), rtol: 1e-3, sol: h`$\frac{${X}}{(1+${r})^{${t}}} = ${fmt(X / Math.pow(1 + r, t))}$` }; },
-      () => { const r = R.pick([0.04, 0.05, 0.06]), cfs = [R.int(50, 200), R.int(50, 200), R.int(500, 1200)]; const pv = cfs.reduce((s, c, i) => s + c / Math.pow(1 + r, i + 1), 0); return { q: h`Cash flows ${cfs.join(', ')} at years 1, 2, 3. PV at ${r * 100}%?`, a: pv, rtol: 1e-3, sol: h`$\sum C_t/(1+r)^t = ${fmt(pv)}$` }; },
+      () => { const X = R.pick([1000, 5000, 10000]), r = R.pick([0.03, 0.05, 0.07, 0.1]), t = R.int(1, 20); return { q: h`PV of ${X} received in ${t} years at ${fx(r * 100, 4)}%?`, a: X / Math.pow(1 + r, t), rtol: 1e-3, sol: h`$\frac{${X}}{(1+${r})^{${t}}} = ${fmt(X / Math.pow(1 + r, t))}$` }; },
+      () => { const r = R.pick([0.04, 0.05, 0.06]), cfs = [R.int(50, 200), R.int(50, 200), R.int(500, 1200)]; const pv = cfs.reduce((s, c, i) => s + c / Math.pow(1 + r, i + 1), 0); return { q: h`Cash flows ${cfs.join(', ')} at years 1, 2, 3. PV at ${fx(r * 100, 4)}%?`, a: pv, rtol: 1e-3, sol: h`$\sum C_t/(1+r)^t = ${fmt(pv)}$` }; },
       () => { const X = R.pick([100, 1000]), P = M.round(X * R.float(0.5, 0.95), 2), t = R.int(2, 10); const r = Math.pow(X / P, 1 / t) - 1; return { q: h`A zero-coupon bond pays ${X} in ${t} years and costs ${P}. Annual yield in %?`, a: 100 * r, tol: 0.01, unit: '%', sol: h`$(${X}/${P})^{1/${t}} - 1 = ${fx(100 * r, 3)}\%$` }; },
     ],
   });
@@ -86,10 +86,10 @@
     ],
     formulas: [h`\text{PV}_{\text{ann}} = C\,\frac{1-(1+r)^{-n}}{r}`, h`\text{FV}_{\text{ann}} = C\,\frac{(1+r)^n - 1}{r}`, h`\text{PV}_{\text{perp}} = \frac Cr,\qquad \text{PV}_{\text{grow}} = \frac{C}{r-g}`, h`C = \frac{P\,r}{1-(1+r)^{-n}}`],
     problems: [
-      () => { const C0 = R.pick([100, 500, 1000]), r = R.pick([0.04, 0.05, 0.06, 0.08]), n = R.int(5, 30); return { q: h`PV of ${C0} per year for ${n} years at ${r * 100}%?`, a: M.annuityPV(C0, r, n), rtol: 1e-3, sol: h`$${C0}\cdot\frac{1-(1+${r})^{-${n}}}{${r}} = ${fmt(M.annuityPV(C0, r, n))}$` }; },
-      () => { const P = R.pick([100000, 200000, 250000, 400000]), r = R.pick([0.03, 0.04, 0.05, 0.06, 0.07]), y = R.pick([15, 20, 25, 30]); const pay = M.payment(P, r / 12, y * 12); return { q: h`Monthly payment on ${fmt(P, 0)} over ${y} years at ${r * 100}% (monthly compounding)?`, a: pay, rtol: 1e-3, sol: h`$i = ${r}/12$, $n = ${y * 12}$ → $C = ${fmt(pay)}$` }; },
-      () => { const D = R.pick([1, 2, 2.5, 3, 4]), r = R.pick([0.08, 0.09, 0.1, 0.12]), g = R.pick([0.02, 0.03, 0.04, 0.05]); return { q: h`Next year's dividend is ${D}, growing ${g * 100}% forever, discount rate ${r * 100}%. Price?`, a: D / (r - g), rtol: 1e-3, sol: h`$\frac{${D}}{${r} - ${g}} = ${fmt(D / (r - g))}$` }; },
-      () => { const C0 = R.pick([100, 200, 500]), r = R.pick([0.05, 0.06, 0.07]), n = R.int(10, 40); return { q: h`Save ${C0} at the end of each year for ${n} years at ${r * 100}%. Future value?`, a: M.annuityFV(C0, r, n), rtol: 1e-3, sol: h`$${C0}\cdot\frac{(1+${r})^{${n}}-1}{${r}} = ${fmt(M.annuityFV(C0, r, n))}$` }; },
+      () => { const C0 = R.pick([100, 500, 1000]), r = R.pick([0.04, 0.05, 0.06, 0.08]), n = R.int(5, 30); return { q: h`PV of ${C0} per year for ${n} years at ${fx(r * 100, 4)}%?`, a: M.annuityPV(C0, r, n), rtol: 1e-3, sol: h`$${C0}\cdot\frac{1-(1+${r})^{-${n}}}{${r}} = ${fmt(M.annuityPV(C0, r, n))}$` }; },
+      () => { const P = R.pick([100000, 200000, 250000, 400000]), r = R.pick([0.03, 0.04, 0.05, 0.06, 0.07]), y = R.pick([15, 20, 25, 30]); const pay = M.payment(P, r / 12, y * 12); return { q: h`Monthly payment on ${fmt(P, 0)} over ${y} years at ${fx(r * 100, 4)}% (monthly compounding)?`, a: pay, rtol: 1e-3, sol: h`$i = ${r}/12$, $n = ${y * 12}$ → $C = ${fmt(pay)}$` }; },
+      () => { const D = R.pick([1, 2, 2.5, 3, 4]), r = R.pick([0.08, 0.09, 0.1, 0.12]), g = R.pick([0.02, 0.03, 0.04, 0.05]); return { q: h`Next year's dividend is ${D}, growing ${fx(g * 100, 4)}% forever, discount rate ${fx(r * 100, 4)}%. Price?`, a: D / (r - g), rtol: 1e-3, sol: h`$\frac{${D}}{${r} - ${g}} = ${fmt(D / (r - g))}$` }; },
+      () => { const C0 = R.pick([100, 200, 500]), r = R.pick([0.05, 0.06, 0.07]), n = R.int(10, 40); return { q: h`Save ${C0} at the end of each year for ${n} years at ${fx(r * 100, 4)}%. Future value?`, a: M.annuityFV(C0, r, n), rtol: 1e-3, sol: h`$${C0}\cdot\frac{(1+${r})^{${n}}-1}{${r}} = ${fmt(M.annuityFV(C0, r, n))}$` }; },
     ],
   });
 
@@ -117,8 +117,8 @@
     ],
     formulas: [h`\text{NPV}(r) = \sum_{t=0}^n C_t(1+r)^{-t}`, h`\text{NPV}(\text{IRR}) = 0`],
     problems: [
-      () => { const c0 = -R.pick([1000, 2000, 5000]), r = R.pick([0.05, 0.08, 0.1]), cfs = [c0, ...Array.from({ length: 3 }, () => -c0 * R.float(0.25, 0.5, 2))]; return { q: h`Cash flows ${cfs.map(c => fmt(c)).join(', ')} at t = 0..3. NPV at ${r * 100}%?`, a: M.npv(r, cfs), tol: Math.max(0.5, Math.abs(M.npv(r, cfs)) * 0.002), sol: h`NPV = ${fmt(M.npv(r, cfs))}` }; },
-      () => { const c0 = -R.pick([100, 1000]), r = R.pick([0.05, 0.1, 0.15, 0.2]); const c1 = -c0 * (1 + r); return { q: h`Invest ${-c0} today, receive ${fmt(c1)} in one year. IRR in %?`, a: r * 100, tol: 0.02, unit: '%', sol: h`$${fmt(c1)}/${-c0} - 1 = ${r * 100}\%$` }; },
+      () => { const c0 = -R.pick([1000, 2000, 5000]), r = R.pick([0.05, 0.08, 0.1]), cfs = [c0, ...Array.from({ length: 3 }, () => -c0 * R.float(0.25, 0.5, 2))]; return { q: h`Cash flows ${cfs.map(c => fmt(c)).join(', ')} at t = 0..3. NPV at ${fx(r * 100, 4)}%?`, a: M.npv(r, cfs), tol: Math.max(0.5, Math.abs(M.npv(r, cfs)) * 0.002), sol: h`NPV = ${fmt(M.npv(r, cfs))}` }; },
+      () => { const c0 = -R.pick([100, 1000]), r = R.pick([0.05, 0.1, 0.15, 0.2]); const c1 = -c0 * (1 + r); return { q: h`Invest ${-c0} today, receive ${fmt(c1)} in one year. IRR in %?`, a: r * 100, tol: 0.02, unit: '%', sol: h`$${fmt(c1)}/${-c0} - 1 = ${fx(r * 100, 4)}\%$` }; },
       () => { const c0 = -R.pick([1000, 2000]), c = -c0 * R.float(0.3, 0.45, 2), n = 4; const cfs = [c0, c, c, c, c]; const irr = M.irr(cfs); return { q: h`Invest ${-c0}, receive ${fmt(c)} per year for ${n} years. IRR in % (numerical)?`, a: 100 * irr, tol: 0.05, unit: '%', sol: h`Solve $${-c0} = ${fmt(c)}\cdot\frac{1-(1+r)^{-4}}{r}$ → $r \approx ${fx(100 * irr, 2)}\%$` }; },
     ],
   });
@@ -145,9 +145,9 @@
     ],
     formulas: [h`r_c = m\ln\left(1 + \tfrac{r_m}{m}\right)`, h`r_m = m\left(e^{r_c/m}-1\right)`, h`1 + r_{\text{nom}} = (1+r_{\text{real}})(1+\pi)`],
     problems: [
-      () => { const r = R.pick([0.04, 0.06, 0.08, 0.1, 0.12]), m = R.pick([1, 2, 4, 12]); return { q: h`Convert ${r * 100}% compounded ${m}× per year to a continuous rate (in %).`, a: 100 * m * Math.log(1 + r / m), tol: 0.005, unit: '%', sol: h`$${m}\ln(1 + ${r}/${m}) = ${fx(100 * m * Math.log(1 + r / m), 4)}\%$` }; },
-      () => { const rn = R.pick([0.05, 0.06, 0.08, 0.1]), pi = R.pick([0.02, 0.03, 0.04]); return { q: h`Nominal rate ${rn * 100}%, inflation ${pi * 100}% (annual). Exact real rate in %?`, a: 100 * ((1 + rn) / (1 + pi) - 1), tol: 0.005, unit: '%', sol: h`$\frac{1+${rn}}{1+${pi}} - 1 = ${fx(100 * ((1 + rn) / (1 + pi) - 1), 4)}\%$` }; },
-      () => { const rc = R.pick([0.03, 0.05, 0.07]), m = R.pick([2, 4, 12]); return { q: h`A continuous rate of ${rc * 100}% equals what rate compounded ${m}× per year (in %)?`, a: 100 * m * (Math.exp(rc / m) - 1), tol: 0.005, unit: '%', sol: h`$${m}(e^{${rc}/${m}} - 1) = ${fx(100 * m * (Math.exp(rc / m) - 1), 4)}\%$` }; },
+      () => { const r = R.pick([0.04, 0.06, 0.08, 0.1, 0.12]), m = R.pick([1, 2, 4, 12]); return { q: h`Convert ${fx(r * 100, 4)}% compounded ${m}× per year to a continuous rate (in %).`, a: 100 * m * Math.log(1 + r / m), tol: 0.005, unit: '%', sol: h`$${m}\ln(1 + ${r}/${m}) = ${fx(100 * m * Math.log(1 + r / m), 4)}\%$` }; },
+      () => { const rn = R.pick([0.05, 0.06, 0.08, 0.1]), pi = R.pick([0.02, 0.03, 0.04]); return { q: h`Nominal rate ${fx(rn * 100, 4)}%, inflation ${fx(pi * 100, 4)}% (annual). Exact real rate in %?`, a: 100 * ((1 + rn) / (1 + pi) - 1), tol: 0.005, unit: '%', sol: h`$\frac{1+${rn}}{1+${pi}} - 1 = ${fx(100 * ((1 + rn) / (1 + pi) - 1), 4)}\%$` }; },
+      () => { const rc = R.pick([0.03, 0.05, 0.07]), m = R.pick([2, 4, 12]); return { q: h`A continuous rate of ${fx(rc * 100, 4)}% equals what rate compounded ${m}× per year (in %)?`, a: 100 * m * (Math.exp(rc / m) - 1), tol: 0.005, unit: '%', sol: h`$${m}(e^{${rc}/${m}} - 1) = ${fx(100 * m * (Math.exp(rc / m) - 1), 4)}\%$` }; },
     ],
   });
 })();

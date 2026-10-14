@@ -67,7 +67,7 @@
     ],
     formulas: [h`P(A\mid B) = \frac{P(A\cap B)}{P(B)}`, h`P(A) = \sum_i P(A\mid B_i)P(B_i)`, h`P(B\mid A) = \frac{P(A\mid B)P(B)}{P(A)}`, h`P(A\cup B) = P(A)+P(B)-P(A\cap B)`],
     problems: [
-      () => { const pr = R.pick([0.01, 0.02, 0.05, 0.1]), se = R.pick([0.9, 0.95, 0.99]), fp = R.pick([0.02, 0.05, 0.1]); const post = pr * se / (pr * se + (1 - pr) * fp); return { q: h`A default signal fires for ${se * 100}% of firms that default and ${fp * 100}% of those that don't. ${pr * 100}% of firms default. P(default | signal) in %?`, a: 100 * post, tol: 0.05, unit: '%', sol: h`$\frac{${se}\cdot${pr}}{${se}\cdot${pr} + ${fp}\cdot${fx(1 - pr, 2)}} = ${fx(100 * post, 2)}\%$` }; },
+      () => { const pr = R.pick([0.01, 0.02, 0.05, 0.1]), se = R.pick([0.9, 0.95, 0.99]), fp = R.pick([0.02, 0.05, 0.1]); const post = pr * se / (pr * se + (1 - pr) * fp); return { q: h`A default signal fires for ${fx(se * 100, 4)}% of firms that default and ${fx(fp * 100, 4)}% of those that don't. ${fx(pr * 100, 4)}% of firms default. P(default | signal) in %?`, a: 100 * post, tol: 0.05, unit: '%', sol: h`$\frac{${se}\cdot${pr}}{${se}\cdot${pr} + ${fp}\cdot${fx(1 - pr, 2)}} = ${fx(100 * post, 2)}\%$` }; },
       () => { const a = R.pick([0.3, 0.4, 0.5]), b = R.pick([0.2, 0.5, 0.6]); return { q: h`$A, B$ independent with $P(A) = ${a}$, $P(B) = ${b}$. $P(A\cup B)$?`, a: a + b - a * b, tol: 1e-4, sol: h`$${a} + ${b} - ${a}\cdot${b} = ${fx(a + b - a * b, 4)}$` }; },
       () => { const p = R.pick([0.5, 0.6, 0.55]), n = R.int(3, 6); return { q: h`A strategy wins each day independently with probability ${p}. P(at least one loss in ${n} days)?`, a: 1 - Math.pow(p, n), tol: 1e-4, sol: h`$1 - ${p}^{${n}} = ${fx(1 - Math.pow(p, n), 4)}$` }; },
       () => { const pB = [0.3, 0.5, 0.2], pA = [R.pick([0.1, 0.2]), R.pick([0.3, 0.4]), R.pick([0.6, 0.7])]; const t = M.sum(pB.map((x, i) => x * pA[i])); return { q: h`Regimes bull/flat/bear have probabilities 0.3/0.5/0.2; P(loss | regime) = ${pA.join('/')}. P(loss)?`, a: t, tol: 1e-4, sol: h`$\sum P(\text{loss}\mid B_i)P(B_i) = ${fx(t, 4)}$` }; },
@@ -162,7 +162,7 @@
     problems: [
       () => { const mu = R.pick([0, 5, 8, 10]), s = R.pick([10, 15, 20]), x = mu + R.pick([-2, -1.5, -1, 1, 1.645, 2]) * s; return { q: h`Annual return $\sim N(${mu}\%, ${s}\%^2)$. $P(\text{return} < ${fx(x, 2)}\%)$?`, a: M.ncdf((x - mu) / s), tol: 0.002, sol: h`$z = ${fx((x - mu) / s, 3)}$, $\Phi(z) = ${fx(M.ncdf((x - mu) / s), 4)}$` }; },
       () => { const a = R.pick([0.9, 0.95, 0.975, 0.99]); return { q: h`$\Phi^{-1}(${a})$?`, a: M.ninv(a), tol: 0.005, sol: h`$${fx(M.ninv(a), 4)}$` }; },
-      () => { const mu = R.pick([0.01, 0.0005, 0]), s = R.pick([0.01, 0.02, 0.015]), alpha = R.pick([0.95, 0.99]); const v = -(mu - s * M.ninv(alpha)); return { q: h`Daily P&L return $\sim N(${mu}, ${s}^2)$. ${alpha * 100}% VaR as a positive loss fraction?`, a: v, tol: 1e-4, sol: h`$-\mu + \sigma\,\Phi^{-1}(${alpha}) = ${fx(v, 5)}$` }; },
+      () => { const mu = R.pick([0.01, 0.0005, 0]), s = R.pick([0.01, 0.02, 0.015]), alpha = R.pick([0.95, 0.99]); const v = -(mu - s * M.ninv(alpha)); return { q: h`Daily P&L return $\sim N(${mu}, ${s}^2)$. ${fx(alpha * 100, 4)}% VaR as a positive loss fraction?`, a: v, tol: 1e-4, sol: h`$-\mu + \sigma\,\Phi^{-1}(${alpha}) = ${fx(v, 5)}$` }; },
       () => { const s1 = R.pick([0.1, 0.2]), s2 = R.pick([0.15, 0.3]), rho = R.pick([0, 0.5, -0.5]); const v = 0.25 * s1 * s1 + 0.25 * s2 * s2 + 0.5 * rho * s1 * s2; return { q: h`$X\sim N(0, ${s1}^2)$, $Y\sim N(0, ${s2}^2)$, correlation ${rho}. Std. dev. of $\tfrac12(X+Y)$?`, a: Math.sqrt(v), tol: 1e-3, sol: h`$\sqrt{\tfrac14\sigma_X^2 + \tfrac14\sigma_Y^2 + \tfrac12\rho\sigma_X\sigma_Y} = ${fx(Math.sqrt(v), 4)}$` }; },
     ],
   });
@@ -193,7 +193,7 @@
     problems: [
       () => { const mu = R.pick([0, 0.05, 0.1]), s = R.pick([0.2, 0.3, 0.5]); return { q: h`$\ln S\sim N(${mu}, ${s}^2)$. $E[S]$?`, a: Math.exp(mu + s * s / 2), tol: 1e-4, sol: h`$e^{${mu} + ${s}^2/2} = ${fx(Math.exp(mu + s * s / 2), 5)}$` }; },
       () => { const S0 = 100, m = R.pick([0.05, 0.08, 0.1]), s = R.pick([0.2, 0.3, 0.4]), T = R.int(1, 5); const med = S0 * Math.exp((m - s * s / 2) * T); return { q: h`GBM with $S_0 = 100$, $m = ${m}$, $\sigma = ${s}$. Median of $S_{${T}}$?`, a: med, tol: 0.01, sol: h`$100e^{(${m} - ${s}^2/2)\cdot${T}} = ${fx(med, 3)}$` }; },
-      () => { const m = R.pick([0.05, 0.08]), s = R.pick([0.2, 0.3, 0.4]), T = R.int(1, 10); const pr = M.ncdf(-(m - s * s / 2) * T / (s * Math.sqrt(T))); return { q: h`GBM, $m = ${m}$, $\sigma = ${s}$. Probability the price is below its start after ${T} years?`, a: pr, tol: 0.002, sol: h`$\Phi\left(\frac{-(${m} - ${s * s / 2})\cdot${T}}{${s}\sqrt{${T}}}\right) = ${fx(pr, 4)}$` }; },
+      () => { const m = R.pick([0.05, 0.08]), s = R.pick([0.2, 0.3, 0.4]), T = R.int(1, 10); const pr = M.ncdf(-(m - s * s / 2) * T / (s * Math.sqrt(T))); return { q: h`GBM, $m = ${m}$, $\sigma = ${s}$. Probability the price is below its start after ${T} years?`, a: pr, tol: 0.002, sol: h`$\Phi\left(\frac{-(${m} - ${fx(s * s / 2, 4)})\cdot${T}}{${s}\sqrt{${T}}}\right) = ${fx(pr, 4)}$` }; },
     ],
   });
 
@@ -324,7 +324,7 @@
     formulas: [h`\bar X_n \xrightarrow{a.s.} \mu`, h`\sqrt n\,\frac{\bar X_n - \mu}{\sigma}\Rightarrow N(0,1)`, h`\operatorname{s.e.}(\bar X_n) = \frac{\sigma}{\sqrt n}`, h`\sigma_{\text{annual}}\approx\sigma_{\text{daily}}\sqrt{252}`],
     problems: [
       () => { const s = R.pick([10, 20, 30]), n = R.pick([100, 400, 2500, 10000]); return { q: h`A Monte Carlo payoff has std. dev. ${s}. Standard error of the price estimate with ${n} paths?`, a: s / Math.sqrt(n), tol: 1e-4, sol: h`$${s}/\sqrt{${n}} = ${fx(s / Math.sqrt(n), 4)}$` }; },
-      () => { const d = R.pick([0.01, 0.012, 0.015, 0.02]); return { q: h`Daily vol ${d * 100}%. Annualised vol (252 days) in %?`, a: 100 * d * Math.sqrt(252), tol: 0.01, unit: '%', sol: h`$${d}\sqrt{252} = ${fx(100 * d * Math.sqrt(252), 3)}\%$` }; },
+      () => { const d = R.pick([0.01, 0.012, 0.015, 0.02]); return { q: h`Daily vol ${fx(d * 100, 4)}%. Annualised vol (252 days) in %?`, a: 100 * d * Math.sqrt(252), tol: 0.01, unit: '%', sol: h`$${d}\sqrt{252} = ${fx(100 * d * Math.sqrt(252), 3)}\%$` }; },
       () => { const f = R.pick([2, 4, 10]); return { q: h`To cut Monte Carlo error by a factor of ${f}, multiply the number of paths by?`, a: f * f, sol: h`Error $\propto 1/\sqrt N$ → $${f}^2 = ${f * f}$` }; },
       () => { const n = R.pick([100, 400]), p = 0.5; const se = Math.sqrt(p * (1 - p) / n), z = R.pick([1, 2]); return { q: h`Flip a fair coin ${n} times. By CLT, P(fraction of heads > ${fx(0.5 + z * se, 3)})?`, a: 1 - M.ncdf(z), tol: 0.002, sol: h`That's $${z}$ standard errors above: $1 - \Phi(${z}) = ${fx(1 - M.ncdf(z), 4)}$` }; },
     ],

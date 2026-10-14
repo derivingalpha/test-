@@ -147,9 +147,9 @@
     ],
     formulas: [h`e = \lim_{n\to\infty}\left(1 + \tfrac1n\right)^n`, h`\ln(ab) = \ln a + \ln b`, h`\ln a^k = k\ln a`, h`\log_b x = \frac{\ln x}{\ln b}`, h`\frac{d}{dx}e^x = e^x`],
     problems: [
-      () => { const r = R.pick([0.03, 0.05, 0.08, 0.1]), t = R.int(2, 10); return { q: h`Continuously compounded at ${r * 100}% for ${t} years, what does 1 grow to?`, a: Math.exp(r * t), rtol: 1e-3, sol: h`$e^{${r}\cdot${t}} = e^{${fx(r * t, 2)}} = ${fx(Math.exp(r * t), 5)}$` }; },
+      () => { const r = R.pick([0.03, 0.05, 0.08, 0.1]), t = R.int(2, 10); return { q: h`Continuously compounded at ${fx(r * 100, 4)}% for ${t} years, what does 1 grow to?`, a: Math.exp(r * t), rtol: 1e-3, sol: h`$e^{${r}\cdot${t}} = e^{${fx(r * t, 2)}} = ${fx(Math.exp(r * t), 5)}$` }; },
       () => { const k = R.int(2, 6); return { q: h`Solve $e^{x} = ${k}$`, a: Math.log(k), rtol: 1e-3, sol: h`$x = \ln ${k} = ${fx(Math.log(k), 5)}$` }; },
-      () => { const r = R.pick([0.04, 0.05, 0.06, 0.08, 0.1, 0.12]); return { q: h`At a continuous rate of ${r * 100}%, how many years to double?`, a: Math.log(2) / r, rtol: 1e-3, sol: h`$e^{rT} = 2 \Rightarrow T = \frac{\ln 2}{${r}} = ${fx(Math.log(2) / r, 3)}$` }; },
+      () => { const r = R.pick([0.04, 0.05, 0.06, 0.08, 0.1, 0.12]); return { q: h`At a continuous rate of ${fx(r * 100, 4)}%, how many years to double?`, a: Math.log(2) / r, rtol: 1e-3, sol: h`$e^{rT} = 2 \Rightarrow T = \frac{\ln 2}{${r}} = ${fx(Math.log(2) / r, 3)}$` }; },
       () => { const a = R.int(2, 9), b = R.int(2, 9); return { q: h`Using $\ln$ laws, compute $\ln ${a} + \ln ${b} - \ln ${a * b}$`, a: 0, tol: 1e-6, sol: h`$\ln\frac{${a}\cdot${b}}{${a * b}} = \ln 1 = 0$` }; },
       () => { const b = R.pick([2, 10]), x = R.pick([5, 50, 100, 1000, 7]); return { q: h`Compute $\log_{${b}} ${x}$`, a: Math.log(x) / Math.log(b), rtol: 1e-3, sol: h`$\frac{\ln ${x}}{\ln ${b}} = ${fx(Math.log(x) / Math.log(b), 5)}$` }; },
     ],
@@ -182,7 +182,7 @@
       () => { const n = R.int(10, 200); return { q: h`Compute $\sum_{k=1}^{${n}} k$`, a: n * (n + 1) / 2, sol: h`$\frac{${n}\cdot${n + 1}}{2} = ${n * (n + 1) / 2}$` }; },
       () => { const a = R.int(1, 9), r = R.pick([0.5, 0.25, 0.2, 0.8, 0.9, -0.5]); return { q: h`Compute $\sum_{k=0}^{\infty} ${a}\cdot(${r})^k$`, a: a / (1 - r), tol: 0.005, sol: h`$\frac{${a}}{1 - (${r})} = ${fx(a / (1 - r), 4)}$` }; },
       () => { const a = R.int(1, 5), d = R.int(2, 7), n = R.int(10, 40); const an = a + (n - 1) * d; return { q: h`Sum of the arithmetic sequence $${a}, ${a + d}, ${a + 2 * d}, \dots$ (${n} terms)`, a: n * (a + an) / 2, sol: h`Last term $${an}$; $S = \frac{${n}}{2}(${a} + ${an}) = ${n * (a + an) / 2}$` }; },
-      () => { const C0 = R.pick([5, 10, 20, 50]), y = R.pick([0.04, 0.05, 0.08, 0.1]); return { q: h`A perpetuity pays ${C0} per year forever starting in one year, discounted at ${y * 100}%. Value?`, a: C0 / y, tol: 0.01, sol: h`$\sum_{k\ge1}\frac{${C0}}{(1+${y})^k} = \frac{${C0}}{${y}} = ${fx(C0 / y, 2)}$` }; },
+      () => { const C0 = R.pick([5, 10, 20, 50]), y = R.pick([0.04, 0.05, 0.08, 0.1]); return { q: h`A perpetuity pays ${C0} per year forever starting in one year, discounted at ${fx(y * 100, 4)}%. Value?`, a: C0 / y, tol: 0.01, sol: h`$\sum_{k\ge1}\frac{${C0}}{(1+${y})^k} = \frac{${C0}}{${y}} = ${fx(C0 / y, 2)}$` }; },
     ],
   });
 })();
