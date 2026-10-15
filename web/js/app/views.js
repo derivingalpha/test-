@@ -363,14 +363,35 @@
     // data
     app.append(el('h2', { text: 'Your data' }));
     const file = el('input', { type: 'file', accept: 'application/json', style: 'display:none' });
-    file.addEventListener('change', () => { const f = file.files[0]; if (!f) return; f.text().then(txt => { try { Store.importJSON(txt); alert('Progress imported.'); MF.route(); } catch (e) { alert('Import failed: ' + e.message); } }); });
+    const msg = el('div', { class: 'small', style: 'min-height:1.4em' });
+    const box = el('textarea', { id: 'progress-json', rows: 6, style: 'width:100%;font-family:var(--mono);font-size:.8rem;display:none', spellcheck: 'false' });
+    file.addEventListener('change', () => { const f = file.files[0]; if (!f) return; f.text().then(doImport); });
+    const doImport = txt => { try { Store.importJSON(txt); MF.route(); } catch (e) { msg.textContent = 'Import failed: ' + e.message; msg.style.color = 'var(--bad)'; } };
     app.append(el('div', { class: 'card' },
-      el('p', { class: 'muted small', text: 'Progress is stored only in this browser (localStorage). Export a backup file to move it to another device.' }),
+      el('p', { class: 'muted small', text: 'Progress is stored only in this browser (localStorage). To move it to another device, export it as a file or copy the JSON, then import it there.' }),
       el('div', { class: 'row' },
-        el('button', { class: 'btn', onclick: () => { const b = new Blob([Store.exportJSON()], { type: 'application/json' }); const a = el('a', { href: URL.createObjectURL(b), download: `mathforge-progress-${Store.today()}.json` }); document.body.append(a); a.click(); a.remove(); } }, 'Export progress'),
-        el('button', { class: 'btn', onclick: () => file.click() }, 'Import progress'), file,
+        el('button', { class: 'btn', onclick: () => { try { const b = new Blob([Store.exportJSON()], { type: 'application/json' }); const a = el('a', { href: URL.createObjectURL(b), download: `mathforge-progress-${Store.today()}.json` }); document.body.append(a); a.click(); a.remove(); } catch (e) { } } }, 'Download file'),
+        el('button', { class: 'btn', onclick: () => { box.style.display = 'block'; box.value = Store.exportJSON(); box.select(); try { navigator.clipboard.writeText(box.value).then(() => { msg.textContent = 'Copied to clipboard.'; msg.style.color = 'var(--good)'; }, () => { msg.textContent = 'Selected. Copy it with Ctrl/Cmd+C.'; }); } catch (e) { msg.textContent = 'Selected. Copy it with Ctrl/Cmd+C.'; } } }, 'Copy as JSON'),
+        el('button', { class: 'btn', onclick: () => file.click() }, 'Import file'), file,
+        el('button', { class: 'btn', onclick: () => { if (box.style.display === 'none' || !box.value.trim() || box.value === Store.exportJSON()) { box.style.display = 'block'; box.value = ''; box.placeholder = 'Paste exported JSON here, then click "Import pasted" again'; box.focus(); return; } doImport(box.value); } }, 'Import pasted'),
         el('span', { class: 'spacer' }),
-        el('button', { class: 'btn ghost', style: 'color:var(--bad)', onclick: () => { if (confirm('Erase all progress on this device?')) { Store.reset(); MF.route(); } } }, 'Reset everything'))));
+        MF.confirmButton('Reset everything', 'Click again to erase all progress', () => { Store.reset(); MF.route(); }, 'btn ghost', 'color:var(--bad)')),
+      box, msg));
+  };
+
+  /** Two-step button: first click arms it (label changes), second click within 4s runs the action. Replaces confirm(), which sandboxed viewers block. */
+  MF.confirmButton = function (label, armedLabel, action, cls, style) {
+    let armed = 0;
+    const b = el('button', { class: cls || 'btn', style: style || null, onclick: () => {
+      if (armed) { clearTimeout(armed); armed = 0; b.textContent = label; action(); return; }
+      b.textContent = armedLabel; armed = setTimeout(() => { armed = 0; b.textContent = label; }, 4000);
+    } }, label);
+    return b;
+  };
+  /** Brief inline toast, replacing alert(). */
+  MF.armConfirm = function (_, text) {
+    const t = el('div', { class: 'callout warn', style: 'position:fixed;bottom:calc(20px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%);z-index:50;margin:0', html: '<b>Note</b>' + MF.esc(text) });
+    document.body.append(t); setTimeout(() => t.remove(), 2500);
   };
 
   V.notFound = function (app) { app.append(el('h1', { text: 'Not found' }), el('p', null, el('a', { href: '#/', text: 'Go home' }))); };

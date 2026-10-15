@@ -36,7 +36,7 @@
       el('button', { class: 'btn sm ghost', onclick: () => { list.querySelectorAll('input').forEach((c, i) => { c.checked = Store.isDone(skills[i].id); c.checked ? chosen.add(skills[i].id) : chosen.delete(skills[i].id); }); } }, 'Completed only'),
       el('button', { class: 'btn sm ghost', onclick: () => { list.querySelectorAll('input').forEach(c => { c.checked = false; }); chosen.clear(); } }, 'None')));
     setup.append(list, el('div', { class: 'row', style: 'margin-top:14px' }, dur, el('span', { class: 'spacer' }),
-      el('button', { class: 'btn speed', onclick: () => { if (!chosen.size) return alert('Pick at least one skill.'); savePrefs(Object.assign(prefs(), { skills: [...chosen], dur: dur.value })); go(); } }, 'Start sprint ▶')));
+      el('button', { class: 'btn speed', onclick: () => { if (!chosen.size) { MF.armConfirm(null, 'Pick at least one skill first'); return; } savePrefs(Object.assign(prefs(), { skills: [...chosen], dur: dur.value })); go(); } }, 'Start sprint ▶')));
     host.append(setup);
 
     function go() {
@@ -171,7 +171,7 @@
     const card = el('div', { class: 'card' });
     const lo = el('input', { type: 'number', min: 1, max: 30, value: p.lo }), hi = el('input', { type: 'number', min: 2, max: 30, value: p.hi });
     card.append(el('p', { class: 'muted small', text: 'The grid is a heat-map of your recall speed for every product: green under 2s, amber under 4s, red slower. Problems are picked by weakness, so the red cells come up most.' }));
-    card.append(el('div', { class: 'row' }, 'From', lo, 'to', hi, el('span', { class: 'spacer' }), el('button', { class: 'btn ghost sm', onclick: () => { if (confirm('Clear table stats?')) { stats = {}; persist(); draw(); } } }, 'Clear stats')));
+    card.append(el('div', { class: 'row' }, 'From', lo, 'to', hi, el('span', { class: 'spacer' }), MF.confirmButton('Clear stats', 'Click again to clear', () => { stats = {}; persist(); draw(); }, 'btn ghost sm')));
     const cvBox = el('div', { class: 'viz' }); const cv = el('canvas'); cvBox.append(cv);
     const stage = el('div', { class: 'drill-stage' });
     card.append(cvBox, stage); host.append(card);
