@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>MathForge</title>
+<meta name="description" content="Interactive, visual courses in speed mental math and financial engineering mathematics, with built-in spaced repetition. Runs entirely in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f17'/%3E%3Cpath d='M14 46 L26 20 L34 36 L40 26 L50 46' stroke='%23ffb347' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script defer src="vendor/katex/katex.min.js"></script>
+<script defer src="vendor/katex/contrib/auto-render.min.js"></script>
+
+<!-- core -->
+<script defer src="js/core/util.js"></script>
+<script defer src="js/core/viz.js"></script>
+<script defer src="js/core/store.js"></script>
+<script defer src="js/core/registry.js"></script>
+
+<!-- speed math -->
+<script defer src="js/content/speed-1-foundations.js"></script>
+<script defer src="js/content/speed-2-addsub.js"></script>
+<script defer src="js/content/speed-3-multiply.js"></script>
+<script defer src="js/content/speed-4-squares.js"></script>
+<script defer src="js/content/speed-5-divpct.js"></script>
+
+<!-- financial engineering math -->
+<script defer src="js/content/fe-00-arithmetic.js"></script>
+<script defer src="js/content/fe-01-algebra.js"></script>
+<script defer src="js/content/fe-02-tvm.js"></script>
+<script defer src="js/content/fe-03-calculus.js"></script>
+<script defer src="js/content/fe-04-linalg.js"></script>
+<script defer src="js/content/fe-05-probability.js"></script>
+<script defer src="js/content/fe-06-statistics.js"></script>
+<script defer src="js/content/fe-07-fixedincome.js"></script>
+<script defer src="js/content/fe-08-portfolio.js"></script>
+<script defer src="js/content/fe-09-derivatives.js"></script>
+<script defer src="js/content/fe-10-stochastic.js"></script>
+<script defer src="js/content/fe-11-blackscholes.js"></script>
+<script defer src="js/content/fe-12-numerical.js"></script>
+<script defer src="js/content/fe-13-advanced.js"></script>
+
+<!-- app -->
+<script defer src="js/app/views.js"></script>
+<script defer src="js/app/drills.js"></script>
+<script defer src="js/app/main.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#/"><span class="logo"></span>MathForge</a>
+  <nav class="nav" id="nav">
+    <a href="#/" data-nav="home">Home</a>
+    <a href="#/track/speed" data-nav="speed">Speed Math</a>
+    <a href="#/track/fe" data-nav="fe">Fin. Eng. Math</a>
+    <a href="#/review" data-nav="review">Review <span class="badge" id="due-badge"></span></a>
+    <a href="#/drills" data-nav="drills">Drills</a>
+    <a href="#/reference" data-nav="reference">Formulas</a>
+    <a href="#/progress" data-nav="progress">Progress</a>
+  </nav>
+</header>
+<main id="app" class="app"><div class="loading">Loading…</div></main>
+<footer class="foot">MathForge runs entirely in your browser. No accounts, servers or AI. Your progress is saved on this device; export it from <a href="#/progress">Progress</a>.</footer>
+</body>
+</html>
