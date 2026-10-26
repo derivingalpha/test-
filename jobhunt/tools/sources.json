@@ -1,0 +1,9 @@
+{
+  "_note": "Job boards swept by discover.mjs. Add a company's board token when you find one of its postings; remove tokens that keep returning 404.",
+  "greenhouse": ["alignerr", "scaleai", "duolingo", "coupang", "deepl", "lilt", "invisibletech", "turing", "toloka", "appen"],
+  "lever": ["welocalize", "weloglobal", "rws", "unbabel", "smartcat", "gengo", "translated", "acolad", "keywordsstudios", "andovar"],
+  "ashby": ["mercor", "micro1", "handshake", "deepgram", "elevenlabs"],
+  "remotive": ["korean", "hindi", "interpreter", "translator", "bilingual", "localization", "linguist"],
+  "jobicy": ["korean", "hindi", "translation", "interpreter", "bilingual"],
+  "remoteok": true
+}
