@@ -4,12 +4,12 @@
  *
  * Setup (2 minutes):
  *   1. https://script.google.com  →  New project  →  paste this file over the sample code.
- *   2. Put the tracker's relay key in RELAY_KEY below (Render › Environment › RELAY_KEY).
+ *   2. Put the tracker's admin password in RELAY_KEY below.
  *   3. Pick the function "setup" in the toolbar  →  Run  →  allow the permissions it asks for.
  *      It creates the every-minute trigger and sends the first batch (see "Execution log").
  */
 const RELAY_URL = 'https://bse-it-tracker.onrender.com/api/nse-relay';
-const RELAY_KEY = 'PASTE_THE_RELAY_KEY_HERE';
+const RELAY_KEY = 'PASTE_THE_KEY_HERE'; // the tracker's admin password (or RELAY_KEY if one is set on Render)
 const FEEDS = ['Online_announcements', 'Financial_Results', 'Board_Meetings'];
 
 function relay() {

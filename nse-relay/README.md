@@ -20,7 +20,7 @@ most hourly, and a 15-minute pause whenever NSE refuses.
 ## 1-minute relay (as the tracker had before 31 Oct)
 
 GitHub runs scheduled jobs late (often 30 minutes to hours apart). For filings within a minute, run one of these —
-both free — and give it the tracker's relay key (`RELAY_KEY` in the tracker's Render environment):
+both free — and give it the tracker's admin password as the key (or `RELAY_KEY` if one is set on Render):
 
 - `apps-script.gs` — Google Apps Script under any Google account: paste, set the key, run `setup` once.
 - `cloudflare-worker.js` — a Cloudflare Worker with a `* * * * *` cron trigger; `<worker>/test` shows what NSE answers it.

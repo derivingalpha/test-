@@ -3,7 +3,7 @@
  * three public RSS feeds and sends them to the tracker.
  *
  * Setup: dash.cloudflare.com › Workers & Pages › Create › Worker › paste this file › Deploy; then Settings ›
- *   Variables: RELAY_KEY (secret, from Render › Environment) and RELAY_URL (https://bse-it-tracker.onrender.com/api/nse-relay);
+ *   Variables: RELAY_KEY (secret: the tracker's admin password) and RELAY_URL (https://bse-it-tracker.onrender.com/api/nse-relay);
  *   Triggers › Cron: * * * * *.  Open <worker url>/test to see what NSE answers this worker.
  */
 const FEEDS = ['Online_announcements', 'Financial_Results', 'Board_Meetings'];
