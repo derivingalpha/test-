@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * NSE announcements relay — reads NSE's public RSS feeds (and, at most hourly, the per-symbol announcements list for
- * the symbols in symbols.txt) and writes one JSON snapshot. Node 18+, no dependencies.
+ * the symbols in symbols.txt) plus BSE's announcements list for the last 24 hours, and writes one JSON snapshot.
+ * Node 18+, no dependencies.
  *
  *   node relay.mjs --prev prev.json --out latest.json            one round (the scheduled GitHub job)
  *   node relay.mjs --out latest.json --loop 15 --post <url>       every 15 s on an always-on machine, pushing each change
@@ -35,6 +36,8 @@ const FEEDS = [
   'https://nsearchives.nseindia.com/content/RSS/Board_Meetings.xml',
 ];
 const HOME = 'https://www.nseindia.com/companies-listing/corporate-filings-announcements';
+const BSE_API = 'https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w';
+const BSE_FIELDS = ['SCRIP_CD', 'SLONGNAME', 'DT_TM', 'NEWS_DT', 'ATTACHMENTNAME', 'SUBCATNAME', 'CATEGORYNAME', 'HEADLINE', 'NEWSSUB', 'NEWSID'];
 const API = 'https://www.nseindia.com/api/corporate-announcements';
 
 const decode = s => s
@@ -114,6 +117,32 @@ async function pollCatchup() {
   return { at: new Date().toISOString(), from, to, ok, failed, lastError, rows };
 }
 
+/** BSE's announcements list, last 24 hours (up to 8 pages, newest first). */
+async function pollBse() {
+  const d = new Date(Date.now() + 330 * 60000);
+  const ymd = x => `${x.getUTCFullYear()}${String(x.getUTCMonth() + 1).padStart(2, '0')}${String(x.getUTCDate()).padStart(2, '0')}`;
+  const from = ymd(new Date(d.getTime() - 86400000)), to = ymd(d);
+  const rows = [];
+  let status = 0, error = '';
+  try {
+    for (let page = 1; page <= 8; page++) {
+      const res = await get(`${BSE_API}?pageno=${page}&strCat=-1&strPrevDate=${from}&strScrip=&strSearch=P&strToDate=${to}&strType=C&subcategory=-1`,
+        { Referer: 'https://www.bseindia.com/', Origin: 'https://www.bseindia.com', Accept: 'application/json, text/plain, */*' }, 15000);
+      status = res.status;
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const body = await res.text();
+      const j = JSON.parse(body);
+      const list = Array.isArray(j?.Table) ? j.Table : [];
+      if (!list.length) { if (page === 1) error = `no rows: ${body.replace(/\s+/g, ' ').slice(0, 80)}`; break; }
+      for (const r of list) rows.push(Object.fromEntries(BSE_FIELDS.map(k => [k, r[k] ?? ''])));
+      const total = Number(j?.Table1?.[0]?.ROWCNT || 0);
+      if (total && rows.length >= total) break;
+      await new Promise(r => setTimeout(r, 300));
+    }
+  } catch (e) { error = String(e.message || e).slice(0, 120); }
+  return { at: new Date().toISOString(), ok: rows.length > 0, status, rows: rows.length, ...(error ? { error } : {}), list: rows };
+}
+
 async function round() {
   const t0 = Date.now();
   if (Date.now() < state.pausedUntil) return null;
@@ -129,7 +158,8 @@ async function round() {
     .sort((a, b) => (b.firstSeen || '').localeCompare(a.firstSeen || '')).slice(0, 6000);
   const due = !has('no-catchup') && SYMBOLS.length && (!state.catchup || Date.now() - Date.parse(state.catchup.at) >= CATCHUP_MIN * 60000);
   if (due && feeds.some(f => f.ok)) { try { state.catchup = await pollCatchup(); } catch (e) { state.catchup = { ...(state.catchup || {}), at: new Date().toISOString(), error: String(e.message || e).slice(0, 120) }; } }
-  const snap = { schema: 1, updatedAt: now, tookMs: Date.now() - t0, runner: process.env.GITHUB_ACTIONS ? 'github-actions' : (process.env.RELAY_NAME || 'loop'), feeds, added, items: state.items, catchup: state.catchup };
+  const bse = has('no-bse') ? null : await pollBse();
+  const snap = { schema: 1, updatedAt: now, tookMs: Date.now() - t0, runner: process.env.GITHUB_ACTIONS ? 'github-actions' : (process.env.RELAY_NAME || 'loop'), feeds, added, items: state.items, catchup: state.catchup, bse };
   fs.writeFileSync(OUT, JSON.stringify(snap));
   return snap;
 }
@@ -147,11 +177,11 @@ if (LOOP > 0) {
   for (;;) {
     const s = await round().catch(e => { console.error(e); return null; });
     if (s && (s.added || !s.feeds.every(f => f.status === 304))) await push(s);
-    if (s) console.log(`${s.updatedAt} +${s.added} ${s.feeds.map(f => `${f.name}:${f.status}`).join(' ')}`);
+    if (s) console.log(`${s.updatedAt} +${s.added} ${s.feeds.map(f => `${f.name}:${f.status}`).join(' ')} BSE:${s.bse ? s.bse.rows : '-'}`);
     await new Promise(r => setTimeout(r, LOOP * 1000));
   }
 } else {
   const s = await round();
   await push(s);
-  console.log(JSON.stringify({ updatedAt: s.updatedAt, added: s.added, items: s.items.length, feeds: s.feeds, catchup: s.catchup && { at: s.catchup.at, ok: s.catchup.ok, failed: s.catchup.failed, rows: s.catchup.rows?.length, lastError: s.catchup.lastError } }));
+  console.log(JSON.stringify({ updatedAt: s.updatedAt, added: s.added, items: s.items.length, feeds: s.feeds, catchup: s.catchup && { at: s.catchup.at, ok: s.catchup.ok, failed: s.catchup.failed, rows: s.catchup.rows?.length, lastError: s.catchup.lastError }, bse: s.bse && { status: s.bse.status, rows: s.bse.rows, error: s.bse.error } }));
 }
