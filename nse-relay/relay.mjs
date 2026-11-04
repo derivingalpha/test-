@@ -23,6 +23,7 @@ const POST = arg('post', process.env.RELAY_POST_URL || '');
 const KEY = process.env.RELAY_KEY || '';
 const KEEP_H = Number(arg('keep-hours', '72'));
 const CATCHUP_MIN = Number(arg('catchup-every', '60'));
+const CATCHUP_DAYS = Number(arg('catchup-days', '7'));
 const DIR = path.dirname(new URL(import.meta.url).pathname);
 const SYMBOLS = fs.existsSync(path.join(DIR, 'symbols.txt'))
   ? fs.readFileSync(path.join(DIR, 'symbols.txt'), 'utf8').split(/\s+/).map(s => s.trim()).filter(Boolean) : [];
@@ -86,14 +87,14 @@ async function pollFeeds() {
   return { feeds, fresh };
 }
 
-/** Per-symbol announcements (the list nseindia.com shows), last 3 days — fills what the RSS window missed. */
+/** Per-symbol announcements (the list nseindia.com shows), last CATCHUP_DAYS days — fills what the RSS window missed. */
 async function pollCatchup() {
   const home = await get(HOME, { Accept: 'text/html,application/xhtml+xml' });
   const raw = typeof home.headers.getSetCookie === 'function' ? home.headers.getSetCookie() : (home.headers.get('set-cookie') || '').split(/,(?=\s*[^;,\s]+=)/);
   const cookie = raw.map(c => c.split(';')[0].trim()).filter(Boolean).join('; ');
   const d = new Date(Date.now() + 330 * 60000);
   const dmy = x => `${String(x.getUTCDate()).padStart(2, '0')}-${String(x.getUTCMonth() + 1).padStart(2, '0')}-${x.getUTCFullYear()}`;
-  const from = dmy(new Date(d.getTime() - 3 * 86400000)), to = dmy(d);
+  const from = dmy(new Date(d.getTime() - CATCHUP_DAYS * 86400000)), to = dmy(d);
   const rows = []; let ok = 0, failed = 0, refused = 0, lastError = '';
   for (const sym of SYMBOLS) {
     if (refused >= 3) { failed++; continue; }
