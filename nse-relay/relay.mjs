@@ -118,14 +118,14 @@ async function pollCatchup() {
 }
 
 /** BSE's announcements list, last 24 hours (up to 8 pages, newest first). */
-async function pollBse() {
+async function pollBse(pages = 8) {
   const d = new Date(Date.now() + 330 * 60000);
   const ymd = x => `${x.getUTCFullYear()}${String(x.getUTCMonth() + 1).padStart(2, '0')}${String(x.getUTCDate()).padStart(2, '0')}`;
   const from = ymd(new Date(d.getTime() - 86400000)), to = ymd(d);
   const rows = [];
   let status = 0, error = '';
   try {
-    for (let page = 1; page <= 8; page++) {
+    for (let page = 1; page <= pages; page++) {
       const res = await get(`${BSE_API}?pageno=${page}&strCat=-1&strPrevDate=${from}&strScrip=&strSearch=P&strToDate=${to}&strType=C&subcategory=-1`,
         { Referer: 'https://www.bseindia.com/', Origin: 'https://www.bseindia.com', Accept: 'application/json, text/plain, */*' }, 15000);
       status = res.status;
@@ -158,7 +158,16 @@ async function round() {
     .sort((a, b) => (b.firstSeen || '').localeCompare(a.firstSeen || '')).slice(0, 6000);
   const due = !has('no-catchup') && SYMBOLS.length && (!state.catchup || Date.now() - Date.parse(state.catchup.at) >= CATCHUP_MIN * 60000);
   if (due && feeds.some(f => f.ok)) { try { state.catchup = await pollCatchup(); } catch (e) { state.catchup = { ...(state.catchup || {}), at: new Date().toISOString(), error: String(e.message || e).slice(0, 120) }; } }
-  const bse = has('no-bse') ? null : await pollBse();
+  // loop mode: the full 24 hours once, then the newest page each round, merged into what is held
+  let bse = has('no-bse') ? null : await pollBse(LOOP > 0 && state.bse?.ok ? 1 : 8);
+  if (bse && LOOP > 0) {
+    const held = state.bse?.list || [];
+    const ids = new Set(held.map(r => r.NEWSID));
+    const fresh = bse.list.filter(r => !ids.has(r.NEWSID));
+    if (state.bse?.ok) bse = { ...bse, ok: true, added: fresh.length, list: [...fresh, ...held].slice(0, 3000) };
+    bse.rows = bse.list.length;
+    if (bse.ok) state.bse = bse;
+  }
   const snap = { schema: 1, updatedAt: now, tookMs: Date.now() - t0, runner: process.env.GITHUB_ACTIONS ? 'github-actions' : (process.env.RELAY_NAME || 'loop'), feeds, added, items: state.items, catchup: state.catchup, bse };
   fs.writeFileSync(OUT, JSON.stringify(snap));
   return snap;
@@ -176,7 +185,7 @@ if (LOOP > 0) {
   console.log(`relay: every ${LOOP}s${POST ? ` → ${POST}` : ''}`);
   for (;;) {
     const s = await round().catch(e => { console.error(e); return null; });
-    if (s && (s.added || !s.feeds.every(f => f.status === 304))) await push(s);
+    if (s && (s.added || s.bse?.added || !s.feeds.every(f => f.status === 304))) await push(s);
     if (s) console.log(`${s.updatedAt} +${s.added} ${s.feeds.map(f => `${f.name}:${f.status}`).join(' ')} BSE:${s.bse ? s.bse.rows : '-'}`);
     await new Promise(r => setTimeout(r, LOOP * 1000));
   }
