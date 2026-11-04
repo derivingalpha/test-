@@ -1,6 +1,6 @@
 name: nse-relay
-# Every 5 minutes (GitHub's shortest schedule; runs can start a few minutes late): read NSE's public announcement
-# feeds and publish one JSON snapshot on the `nse-data` branch (a single commit, replaced each run).
+# Started by the tracker (workflow_dispatch) when its snapshot is older than 5 minutes, with GitHub's schedule as a
+# backstop: read NSE's public announcement feeds and publish one JSON snapshot on the `nse-data` branch.
 on:
   schedule:
     - cron: '2-59/5 * * * *'
