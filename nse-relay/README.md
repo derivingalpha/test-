@@ -16,3 +16,14 @@ RELAY_KEY=... node relay.mjs --out latest.json --loop 15 --post https://<app>/ap
 
 Requests are kept light: one request per feed per round, conditional requests in loop mode, the per-symbol list at
 most hourly, and a 15-minute pause whenever NSE refuses.
+
+## 1-minute relay (as the tracker had before 31 Oct)
+
+GitHub runs scheduled jobs late (often 30 minutes to hours apart). For filings within a minute, run one of these —
+both free — and give it the tracker's relay key (`RELAY_KEY` in the tracker's Render environment):
+
+- `apps-script.gs` — Google Apps Script under any Google account: paste, set the key, run `setup` once.
+- `cloudflare-worker.js` — a Cloudflare Worker with a `* * * * *` cron trigger; `<worker>/test` shows what NSE answers it.
+
+Each run reads the three RSS feeds and posts them to `/api/nse-relay`; the tracker parses them exactly like the
+feeds it used to read itself. This scheduled GitHub job stays as the backstop and keeps the hourly per-symbol list.
