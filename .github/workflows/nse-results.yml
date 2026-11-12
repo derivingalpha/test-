@@ -52,6 +52,8 @@ jobs:
             [ "$left" -lt 4 ] && break
             node nse-relay/results.mjs --store "$RUNNER_TEMP/store" --minutes "$left" --max-symbols 8 --skip-fresh 150 | tee out.txt
             publish
+            # (the symbols asked for are read first, once)
+            export RESULTS_SYMBOLS=""
             # nothing left to read (every symbol read in the last 150 min), or NSE stopped answering
             grep -q '"symbols":0' out.txt && break
             grep -q '"stopped":"NSE' out.txt && break

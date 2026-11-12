@@ -171,17 +171,21 @@ async function main() {
     }
     const links = xbrlLinks(lists);
     const xbrl = {};
-    let fetched = 0, failed = 0;
+    let fetched = 0, failed = 0, inARow = 0;
     for (const url of links) {
       if (prev.xbrl?.[url]) { xbrl[url] = prev.xbrl[url]; continue; }
       if (timeLeft() < 60_000) break;
       try {
-        const res = await get(url, { Referer: 'https://www.nseindia.com/', Accept: 'application/xml,text/xml,*/*' });
-        if (res.status === 403) { run.stopped = `NSE archives refused ${url.slice(-60)}`; break; }
+        const res = await get(url, { Referer: 'https://www.nseindia.com/', Accept: 'application/xml,text/xml,*/*' }, 20_000);
+        if (res.status === 403 || res.status === 429) { run.stopped = `NSE stopped answering (archives ${res.status})`; break; }
         if (!res.ok) { failed++; await res.arrayBuffer().catch(() => undefined); continue; }
         xbrl[url] = strip(await res.text());
-        fetched++; run.xbrl++;
-      } catch { failed++; }
+        fetched++; run.xbrl++; inARow = 0;
+      } catch {
+        failed++;
+        // the archives holding connections: three in a row and the run stops (the next run carries on)
+        if (++inARow >= 3) { run.stopped = 'NSE stopped answering (archives)'; break; }
+      }
       await sleep(1200);
     }
     const doc = { symbol: sym, at: new Date().toISOString(), lists, xbrl };
