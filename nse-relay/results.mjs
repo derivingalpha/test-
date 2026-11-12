@@ -86,6 +86,20 @@ const MON = { jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06', 
 const nseDate = s => { const m = String(s || '').match(/(\d{1,2})-([A-Za-z]{3})-(\d{4})/); return m ? `${m[3]}-${MON[m[2].toLowerCase()]}-${m[1].padStart(2, '0')}` : null; };
 const rowsOf = txt => { try { const j = JSON.parse(txt); return Array.isArray(j) ? j : Array.isArray(j?.data) ? j.data : []; } catch { return []; } };
 
+/** The latest quarter end with a results filing in the lists (YYYY-MM-DD), or ''. */
+function latestQuarter(lists) {
+  let best = '';
+  for (const txt of [lists.plain, lists.range]) for (const r of rowsOf(txt || '')) {
+    const from = nseDate(r.fromDate), to = nseDate(r.toDate);
+    if (from && to && (Date.parse(to) - Date.parse(from)) / 86_400_000 >= 80 && to > best) best = to;
+  }
+  for (const r of rowsOf(lists.integrated || '')) {
+    const to = nseDate(String(r.qe_Date || r.qeDate || r.toDate || ''));
+    if (to && (!r.type || /financ/i.test(String(r.type))) && to > best) best = to;
+  }
+  return best;
+}
+
 /** XBRL links of the quarterly filings since October 2020 in the two lists (as the tracker selects them). */
 function xbrlLinks(lists) {
   const out = new Set();
@@ -154,7 +168,7 @@ async function main() {
     }
     const doc = { symbol: sym, at: new Date().toISOString(), lists, xbrl };
     fs.writeFileSync(file, zlib.gzipSync(Buffer.from(JSON.stringify(doc)), { level: 9 }));
-    index.symbols[sym] = { at: doc.at, filings: Object.keys(xbrl).length, links: links.length };
+    index.symbols[sym] = { at: doc.at, filings: Object.keys(xbrl).length, links: links.length, latest: latestQuarter(lists) };
     run.symbols++;
     console.log(`${sym}: ${links.length} quarterly XBRL filings listed, ${fetched} fetched now, ${Object.keys(xbrl).length} held${failed ? `, ${failed} failed` : ''}`);
     if (run.stopped) break;
