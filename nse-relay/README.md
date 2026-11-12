@@ -48,3 +48,12 @@ NSE refuses most cloud hosts (Render, Google Apps Script, AWS); GitHub's runners
 the tracker's admin password, or `RELAY_KEY` if one is set on Render). Setup is in the file's header. Open
 `<worker>/test` first: it shows what NSE answers Cloudflare — three 200s and the tracker gets filings within about
 5 seconds; a 403 and nothing changes (the worker backs off for 15 minutes at a time, the GitHub relay carries on).
+
+## Financial results (`results.mjs`, workflow `nse-results`)
+
+NSE's quarterly results filings for the tracker's Indian companies (`results-symbols.txt`): for each symbol, the two
+lists of filings (the results list and "Integrated Filing - Financials") and the XBRL of every quarterly filing since
+October 2020, kept without its dimensional contexts. Published on the `nse-results` branch as `<SYMBOL>.json.gz` plus
+`index.json`; the tracker reads them when NSE refuses its own requests. Runs every three hours, when the tracker asks
+(`workflow_dispatch` with `symbols` to read first), and when the script or the list changes. Each run re-reads the lists
+and fetches only filings it does not hold yet, within a 50-minute budget, one request at a time.

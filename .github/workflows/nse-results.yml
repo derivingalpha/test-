@@ -1,0 +1,51 @@
+name: nse-results
+# NSE's quarterly results filings (lists + XBRL) for the tracker's Indian companies, published on the `nse-results`
+# branch (NSE refuses the tracker's host). Every three hours, when the tracker asks (workflow_dispatch, with symbols
+# to read first), and when the script or the symbol list changes.
+on:
+  schedule:
+    - cron: '23 */3 * * *'
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: 'NSE symbols to read first (comma-separated)'
+        required: false
+        default: ''
+  push:
+    branches: [master]
+    paths:
+      - 'nse-relay/results.mjs'
+      - 'nse-relay/results-symbols.txt'
+permissions:
+  contents: write
+concurrency:
+  group: nse-results
+  cancel-in-progress: false
+jobs:
+  results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 58
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: nse-relay
+      - name: Files held so far
+        run: |
+          mkdir -p "$RUNNER_TEMP/store"
+          if git fetch -q --depth=1 origin nse-results 2>/dev/null; then git --work-tree="$RUNNER_TEMP/store" checkout FETCH_HEAD -- . ; fi
+          ls "$RUNNER_TEMP/store" | wc -l
+      - name: Read NSE
+        env:
+          RESULTS_SYMBOLS: ${{ github.event.inputs.symbols }}
+        run: node nse-relay/results.mjs --store "$RUNNER_TEMP/store" --minutes 50
+      - name: Publish
+        if: always()
+        run: |
+          cd "$RUNNER_TEMP/store"
+          [ -f index.json ] || exit 0
+          rm -rf .git && git init -q -b nse-results
+          git config user.name "nse-relay"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "NSE results $(date -u +%FT%TZ)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" nse-results
