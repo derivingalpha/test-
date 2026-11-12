@@ -53,18 +53,27 @@ async function session() {
 }
 
 class Refused extends Error {}
-/** One NSE API list (JSON text); a fresh session once on 401/403, then the run stops. */
+/**
+ * One NSE API list (JSON text). NSE slows down a client it thinks is too busy by not answering: a refusal, a
+ * challenge page or no answer gets one more try after a minute with a fresh session; then the run stops (the next run
+ * carries on where this one left off).
+ */
 async function api(url) {
   for (let attempt = 0; attempt < 2; attempt++) {
-    if (!cookie || attempt) { await session(); await sleep(1500); }
-    const res = await get(url, { Referer: HOME, Accept: 'application/json, text/plain, */*', Cookie: cookie });
-    const txt = await res.text();
-    if (res.status === 401 || res.status === 403) continue;
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    if (!/^\s*[[{]/.test(txt)) continue; // an HTML challenge page instead of JSON
-    return txt;
+    try {
+      if (!cookie || attempt) { if (attempt) await sleep(60_000); await session(); await sleep(2000); }
+      const res = await get(url, { Referer: HOME, Accept: 'application/json, text/plain, */*', Cookie: cookie });
+      const txt = await res.text();
+      if (res.status === 401 || res.status === 403 || res.status === 429) continue;
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!/^\s*[[{]/.test(txt)) continue; // an HTML challenge page instead of JSON
+      return txt;
+    } catch (e) {
+      // no answer (NSE holding the connection): once more after a minute, then the run stops
+      if (!/abort|timeout|fetch failed|ECONNRESET|socket/i.test(String(e?.message || e))) throw e;
+    }
   }
-  throw new Refused(`NSE refused ${url.replace(/^https:\/\/[^/]+/, '').slice(0, 80)}`);
+  throw new Refused(`NSE stopped answering ${url.replace(/^https:\/\/[^/]+/, '').slice(0, 80)}`);
 }
 
 /** The XBRL without dimensional contexts: plain contexts, units, and the facts in those contexts. */
@@ -141,9 +150,9 @@ async function main() {
     const prev = readGz(file) || { symbol: sym, xbrl: {} };
     const lists = {};
     try {
-      lists.plain = await api(`${RESULTS}?index=equities&symbol=${encodeURIComponent(sym)}&period=Quarterly`); await sleep(1200);
-      lists.range = await api(`${RESULTS}?index=equities&symbol=${encodeURIComponent(sym)}&period=Quarterly&from_date=01-07-2020&to_date=${dmy}`); await sleep(1200);
-      lists.integrated = await api(`${INTEGRATED}?index=equities&symbol=${encodeURIComponent(sym)}&type=${encodeURIComponent('Integrated Filing- Financials')}`); await sleep(1200);
+      lists.plain = await api(`${RESULTS}?index=equities&symbol=${encodeURIComponent(sym)}&period=Quarterly`); await sleep(2500);
+      lists.range = await api(`${RESULTS}?index=equities&symbol=${encodeURIComponent(sym)}&period=Quarterly&from_date=01-07-2020&to_date=${dmy}`); await sleep(2500);
+      lists.integrated = await api(`${INTEGRATED}?index=equities&symbol=${encodeURIComponent(sym)}&type=${encodeURIComponent('Integrated Filing- Financials')}`); await sleep(2500);
       run.lists += 3;
     } catch (e) {
       if (e instanceof Refused) { run.stopped = e.message; break; }
@@ -164,7 +173,7 @@ async function main() {
         xbrl[url] = strip(await res.text());
         fetched++; run.xbrl++;
       } catch { failed++; }
-      await sleep(350);
+      await sleep(1200);
     }
     const doc = { symbol: sym, at: new Date().toISOString(), lists, xbrl };
     fs.writeFileSync(file, zlib.gzipSync(Buffer.from(JSON.stringify(doc)), { level: 9 }));
