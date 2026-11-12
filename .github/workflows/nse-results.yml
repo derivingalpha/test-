@@ -34,18 +34,25 @@ jobs:
           mkdir -p "$RUNNER_TEMP/store"
           if git fetch -q --depth=1 origin nse-results 2>/dev/null; then git --work-tree="$RUNNER_TEMP/store" checkout FETCH_HEAD -- . ; fi
           ls "$RUNNER_TEMP/store" | wc -l
-      - name: Read NSE
+      - name: Read NSE, publishing as it goes
         env:
           RESULTS_SYMBOLS: ${{ github.event.inputs.symbols }}
-        run: node nse-relay/results.mjs --store "$RUNNER_TEMP/store" --minutes 50
-      - name: Publish
-        if: always()
         run: |
-          cd "$RUNNER_TEMP/store"
-          [ -f index.json ] || exit 0
-          rm -rf .git && git init -q -b nse-results
-          git config user.name "nse-relay"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -qm "NSE results $(date -u +%FT%TZ)"
-          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" nse-results
+          publish() {
+            [ -f "$RUNNER_TEMP/store/index.json" ] || return 0
+            rm -rf "$RUNNER_TEMP/pub" && mkdir -p "$RUNNER_TEMP/pub" && cp "$RUNNER_TEMP/store/"* "$RUNNER_TEMP/pub/"
+            ( cd "$RUNNER_TEMP/pub" && git init -q -b nse-results && git config user.name "nse-relay" \
+              && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git add -A \
+              && git commit -qm "NSE results $(date -u +%FT%TZ)" \
+              && git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" nse-results )
+          }
+          end=$(( $(date +%s) + 50 * 60 ))
+          while :; do
+            left=$(( (end - $(date +%s)) / 60 ))
+            [ "$left" -lt 4 ] && break
+            node nse-relay/results.mjs --store "$RUNNER_TEMP/store" --minutes "$left" --max-symbols 8 --skip-fresh 150 | tee out.txt
+            publish
+            # nothing left to read (every symbol read in the last 150 min), or NSE stopped answering
+            grep -q '"symbols":0' out.txt && break
+            grep -q '"stopped":"NSE' out.txt && break
+          done

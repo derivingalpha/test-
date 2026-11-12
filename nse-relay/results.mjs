@@ -4,7 +4,7 @@
  * "Integrated Filing - Financials" list) and the XBRL of every quarterly filing since October 2020, kept as published
  * so the tracker reads them exactly as it would from NSE (NSE refuses the tracker's host). Node 18+, no dependencies.
  *
- *   node results.mjs --store <dir> [--symbols A,B] [--minutes 45]
+ *   node results.mjs --store <dir> [--symbols A,B] [--minutes 45] [--max-symbols 8] [--skip-fresh 120]
  *
  * <dir> holds one gzipped JSON file per symbol (<SYMBOL>.json.gz) and index.json. Each run reads the lists again for
  * every symbol (least recently read first, within the time budget) and fetches only XBRL files it does not hold yet.
@@ -22,6 +22,10 @@ const args = process.argv.slice(2);
 const arg = (k, d = '') => { const i = args.indexOf(`--${k}`); return i >= 0 ? (args[i + 1] ?? '') : d; };
 const STORE = arg('store', 'results');
 const MINUTES = Number(arg('minutes', '45')) || 45;
+/** at most this many symbols in one call (the workflow publishes between calls) */
+const MAX_SYMBOLS = Number(arg('max-symbols', '0')) || Infinity;
+/** symbols read less than this many minutes ago are left for later */
+const SKIP_FRESH = Number(arg('skip-fresh', '0')) || 0;
 const DIR = path.dirname(new URL(import.meta.url).pathname);
 const listFile = path.join(DIR, 'results-symbols.txt');
 const base = fs.existsSync(listFile) ? fs.readFileSync(listFile, 'utf8').split(/\s+/).map(s => s.trim()).filter(Boolean) : [];
@@ -146,6 +150,11 @@ async function main() {
   const dmy = `${String(d.getUTCDate()).padStart(2, '0')}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${d.getUTCFullYear()}`;
   for (const sym of [...new Set(order)]) {
     if (timeLeft() < 90_000) { run.stopped = 'time budget'; break; }
+    if (run.symbols >= MAX_SYMBOLS) break;
+    const was = index.symbols[sym]?.at;
+    // (a symbol asked for now is read again unless it was read in the last ten minutes)
+    const fresh = extra.includes(sym) ? Math.min(SKIP_FRESH, 10) : SKIP_FRESH;
+    if (fresh && was && Date.now() - Date.parse(was) < fresh * 60_000) continue;
     const file = path.join(STORE, `${sym}.json.gz`);
     const prev = readGz(file) || { symbol: sym, xbrl: {} };
     const lists = {};
