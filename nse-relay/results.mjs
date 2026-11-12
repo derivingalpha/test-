@@ -179,6 +179,10 @@ async function main() {
     fs.writeFileSync(file, zlib.gzipSync(Buffer.from(JSON.stringify(doc)), { level: 9 }));
     index.symbols[sym] = { at: doc.at, filings: Object.keys(xbrl).length, links: links.length, latest: latestQuarter(lists) };
     run.symbols++;
+    // (the index after each symbol: a run stopped part-way keeps what it read)
+    index.updatedAt = new Date().toISOString();
+    index.lastRun = { ...run, partial: true };
+    fs.writeFileSync(indexFile, JSON.stringify(index, null, 1));
     console.log(`${sym}: ${links.length} quarterly XBRL filings listed, ${fetched} fetched now, ${Object.keys(xbrl).length} held${failed ? `, ${failed} failed` : ''}`);
     if (run.stopped) break;
   }
