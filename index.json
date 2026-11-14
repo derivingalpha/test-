@@ -1,0 +1,530 @@
+{
+ "schema": 1,
+ "symbols": {
+  "3IINFOLTD": {
+   "at": "2026-11-13T15:34:45.462Z",
+   "filings": 45,
+   "links": 45,
+   "latest": "2026-09-30"
+  },
+  "AFFLE": {
+   "at": "2026-11-13T15:34:54.307Z",
+   "filings": 47,
+   "links": 47,
+   "latest": "2026-09-30"
+  },
+  "MPHASIS": {
+   "at": "2026-11-13T15:37:43.849Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "SONATSOFTW": {
+   "at": "2026-11-13T15:37:53.332Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "NETWEB": {
+   "at": "2026-11-13T15:38:02.414Z",
+   "filings": 17,
+   "links": 17,
+   "latest": "2026-09-30"
+  },
+  "RAILTEL": {
+   "at": "2026-11-13T15:09:01.056Z",
+   "filings": 36,
+   "links": 36,
+   "latest": "2026-09-30"
+  },
+  "ROUTE": {
+   "at": "2026-11-13T15:09:09.802Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "NAZARA": {
+   "at": "2026-11-13T15:35:03.032Z",
+   "filings": 51,
+   "links": 51,
+   "latest": "2026-09-30"
+  },
+  "COFORGE": {
+   "at": "2026-11-13T15:35:12.129Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "AMBER": {
+   "at": "2026-11-13T15:36:53.685Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "ANANTRAJ": {
+   "at": "2026-11-13T15:37:02.494Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "AURIONPRO": {
+   "at": "2026-11-13T15:37:15.989Z",
+   "filings": 52,
+   "links": 52,
+   "latest": "2026-09-30"
+  },
+  "AXISCADES": {
+   "at": "2026-11-13T15:37:25.612Z",
+   "filings": 42,
+   "links": 44,
+   "latest": "2026-06-30"
+  },
+  "BBOX": {
+   "at": "2026-11-13T15:37:34.862Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "BHARTIARTL": {
+   "at": "2026-11-13T15:09:18.644Z",
+   "filings": 51,
+   "links": 51,
+   "latest": "2026-09-30"
+  },
+  "BHARTIHEXA": {
+   "at": "2026-11-13T15:09:27.466Z",
+   "filings": 11,
+   "links": 11,
+   "latest": "2026-09-30"
+  },
+  "BSOFT": {
+   "at": "2026-11-13T15:09:36.182Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "CAMS": {
+   "at": "2026-11-13T15:09:44.883Z",
+   "filings": 45,
+   "links": 45,
+   "latest": "2026-09-30"
+  },
+  "CARTRADE": {
+   "at": "2026-11-13T15:09:53.695Z",
+   "filings": 41,
+   "links": 41,
+   "latest": "2026-09-30"
+  },
+  "CYIENT": {
+   "at": "2026-11-13T15:11:36.573Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "CYIENTDLM": {
+   "at": "2026-11-13T15:11:50.121Z",
+   "filings": 25,
+   "links": 25,
+   "latest": "2026-09-30"
+  },
+  "DATAMATICS": {
+   "at": "2026-11-13T15:11:59.027Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "DIXON": {
+   "at": "2026-11-13T15:12:07.761Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "ECLERX": {
+   "at": "2026-11-13T15:12:16.521Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "ETERNAL": {
+   "at": "2026-11-13T15:12:25.203Z",
+   "filings": 44,
+   "links": 44,
+   "latest": "2026-09-30"
+  },
+  "EXPLEOSOL": {
+   "at": "2026-11-13T15:12:34.063Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-06-30"
+  },
+  "FRACTAL": {
+   "at": "2026-11-13T15:12:42.788Z",
+   "filings": 8,
+   "links": 8,
+   "latest": "2026-09-30"
+  },
+  "FSL": {
+   "at": "2026-11-13T15:14:24.270Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "HAPPSTMNDS": {
+   "at": "2026-11-13T15:14:37.857Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "HCLTECH": {
+   "at": "2026-11-13T15:14:46.729Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "HEXT": {
+   "at": "2026-11-13T15:14:55.488Z",
+   "filings": 17,
+   "links": 17,
+   "latest": "2026-09-30"
+  },
+  "HFCL": {
+   "at": "2026-11-13T15:15:04.660Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "HGS": {
+   "at": "2026-11-13T15:15:13.761Z",
+   "filings": 53,
+   "links": 54,
+   "latest": "2026-09-30"
+  },
+  "IDEA": {
+   "at": "2026-11-13T15:15:22.811Z",
+   "filings": 45,
+   "links": 45,
+   "latest": "2026-09-30"
+  },
+  "IKS": {
+   "at": "2026-11-13T15:17:04.379Z",
+   "filings": 16,
+   "links": 16,
+   "latest": "2026-09-30"
+  },
+  "INDIAMART": {
+   "at": "2026-11-13T15:17:13.238Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "INDUSTOWER": {
+   "at": "2026-11-13T15:17:27.682Z",
+   "filings": 47,
+   "links": 47,
+   "latest": "2026-09-30"
+  },
+  "INFOBEAN": {
+   "at": "2026-11-13T15:17:36.896Z",
+   "filings": 52,
+   "links": 52,
+   "latest": "2026-09-30"
+  },
+  "INFY": {
+   "at": "2026-11-13T15:17:45.943Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "INTELLECT": {
+   "at": "2026-11-13T15:17:55.098Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "IXIGO": {
+   "at": "2026-11-13T15:18:04.114Z",
+   "filings": 22,
+   "links": 22,
+   "latest": "2026-09-30"
+  },
+  "JUSTDIAL": {
+   "at": "2026-11-13T15:18:13.193Z",
+   "filings": 38,
+   "links": 38,
+   "latest": "2026-09-30"
+  },
+  "KAYNES": {
+   "at": "2026-11-13T15:19:54.385Z",
+   "filings": 34,
+   "links": 34,
+   "latest": "2026-06-30"
+  },
+  "KFINTECH": {
+   "at": "2026-11-13T15:20:03.307Z",
+   "filings": 34,
+   "links": 34,
+   "latest": "2026-09-30"
+  },
+  "KPITTECH": {
+   "at": "2026-11-13T15:20:17.120Z",
+   "filings": 47,
+   "links": 47,
+   "latest": "2026-09-30"
+  },
+  "LATENTVIEW": {
+   "at": "2026-11-13T15:20:26.104Z",
+   "filings": 39,
+   "links": 39,
+   "latest": "2026-09-30"
+  },
+  "LTIM": {
+   "at": "2026-11-13T15:20:34.668Z",
+   "filings": 0,
+   "links": 0,
+   "latest": ""
+  },
+  "LTM": {
+   "at": "2026-11-13T15:20:43.417Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "LTTS": {
+   "at": "2026-11-13T15:20:52.251Z",
+   "filings": 53,
+   "links": 53,
+   "latest": "2026-09-30"
+  },
+  "MAPMYINDIA": {
+   "at": "2026-11-13T15:21:01.254Z",
+   "filings": 42,
+   "links": 42,
+   "latest": "2026-09-30"
+  },
+  "MASTEK": {
+   "at": "2026-11-13T15:22:44.009Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "MOSCHIP": {
+   "at": "2026-11-13T15:22:53.110Z",
+   "filings": 16,
+   "links": 16,
+   "latest": "2026-09-30"
+  },
+  "NAUKRI": {
+   "at": "2026-11-13T15:23:07.514Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "NEWGEN": {
+   "at": "2026-11-13T15:23:16.867Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "NIITLTD": {
+   "at": "2026-11-13T15:23:25.761Z",
+   "filings": 47,
+   "links": 47,
+   "latest": "2026-09-30"
+  },
+  "NIITMTS": {
+   "at": "2026-11-13T15:23:34.809Z",
+   "filings": 27,
+   "links": 27,
+   "latest": "2026-09-30"
+  },
+  "NUCLEUS": {
+   "at": "2026-11-13T15:23:43.628Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "NYKAA": {
+   "at": "2026-11-13T15:23:52.447Z",
+   "filings": 40,
+   "links": 40,
+   "latest": "2026-09-30"
+  },
+  "OFSS": {
+   "at": "2026-11-13T15:25:33.915Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "ONWARDTEC": {
+   "at": "2026-11-13T15:25:43.979Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "PAYTM": {
+   "at": "2026-11-13T15:25:58.472Z",
+   "filings": 41,
+   "links": 41,
+   "latest": "2026-09-30"
+  },
+  "PERSISTENT": {
+   "at": "2026-11-13T15:26:07.338Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "POLICYBZR": {
+   "at": "2026-11-13T15:26:16.620Z",
+   "filings": 39,
+   "links": 39,
+   "latest": "2026-09-30"
+  },
+  "QUESS": {
+   "at": "2026-11-13T15:26:25.392Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "QUICKHEAL": {
+   "at": "2026-11-13T15:26:34.260Z",
+   "filings": 51,
+   "links": 51,
+   "latest": "2026-09-30"
+  },
+  "RAMCOSYS": {
+   "at": "2026-11-13T15:26:43.200Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "REDINGTON": {
+   "at": "2026-11-13T15:28:24.901Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "RSYSTEMS": {
+   "at": "2026-11-13T15:28:33.694Z",
+   "filings": 51,
+   "links": 51,
+   "latest": "2026-09-30"
+  },
+  "SAKSOFT": {
+   "at": "2026-11-13T15:28:47.587Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "SASKEN": {
+   "at": "2026-11-13T15:28:56.466Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "STLTECH": {
+   "at": "2026-11-13T15:29:05.471Z",
+   "filings": 54,
+   "links": 54,
+   "latest": "2026-09-30"
+  },
+  "SWIGGY": {
+   "at": "2026-11-13T15:29:14.333Z",
+   "filings": 21,
+   "links": 21,
+   "latest": "2026-09-30"
+  },
+  "SYRMA": {
+   "at": "2026-11-13T15:29:23.313Z",
+   "filings": 39,
+   "links": 39,
+   "latest": "2026-09-30"
+  },
+  "TANLA": {
+   "at": "2026-11-13T15:29:32.126Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "TATACOMM": {
+   "at": "2026-11-13T15:31:13.539Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "TATAELXSI": {
+   "at": "2026-11-13T15:31:22.420Z",
+   "filings": 23,
+   "links": 23,
+   "latest": "2026-09-30"
+  },
+  "TATATECH": {
+   "at": "2026-11-13T15:31:36.097Z",
+   "filings": 25,
+   "links": 25,
+   "latest": "2026-09-30"
+  },
+  "TCS": {
+   "at": "2026-11-13T15:31:45.024Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "TEAMLEASE": {
+   "at": "2026-11-13T15:31:54.407Z",
+   "filings": 49,
+   "links": 49,
+   "latest": "2026-09-30"
+  },
+  "TECHM": {
+   "at": "2026-11-13T15:32:03.282Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "TECHNOE": {
+   "at": "2026-11-13T15:32:12.334Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "TEJASNET": {
+   "at": "2026-11-13T15:32:21.238Z",
+   "filings": 50,
+   "links": 50,
+   "latest": "2026-09-30"
+  },
+  "WIPRO": {
+   "at": "2026-11-13T15:34:02.654Z",
+   "filings": 46,
+   "links": 46,
+   "latest": "2026-09-30"
+  },
+  "ZAGGLE": {
+   "at": "2026-11-13T15:34:14.623Z",
+   "filings": 31,
+   "links": 31,
+   "latest": "2026-09-30"
+  },
+  "ZENSARTECH": {
+   "at": "2026-11-13T15:34:28.017Z",
+   "filings": 48,
+   "links": 48,
+   "latest": "2026-09-30"
+  },
+  "ZOMATO": {
+   "at": "2026-11-13T15:34:36.645Z",
+   "filings": 0,
+   "links": 0,
+   "latest": ""
+  }
+ },
+ "updatedAt": "2026-11-14T15:56:29.372Z",
+ "lastRun": {
+  "at": "2026-11-14T15:54:23.728Z",
+  "symbols": 0,
+  "lists": 0,
+  "xbrl": 0,
+  "failed": 0,
+  "stopped": "NSE stopped answering /api/corporates-financial-results?index=equities&symbol=RAILTEL&period=Quarterly"
+ }
+}
